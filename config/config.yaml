@@ -1,0 +1,46 @@
+input_file: "resources/tracerx.tsv"
+
+experiment_name: "test_run"
+
+pyclone-vi:
+  num_clusters: 100
+  density: "binomial"
+  restarts: 100
+  num_grid_points: 100
+  num_threads: 10
+  print_freq: 100
+  mix_weight_prior: 100.0
+  seed: null
+  max_iters: 10000
+  precision: 200.0
+
+phyclone:
+  burnin: 100
+  num_iters: 5000
+  print_freq: 100
+  density: "beta-binomial"
+  proposal: "semi-adapted"
+  num_chains: 4
+  num_particles: 100
+  grid_size: 101
+  precision: 400.0
+  concentration_value: 1.0
+  seed: null
+  enable_outlier_modelling: true
+  outlier_modelling_options:
+    outlier_prob: 0.0001
+    assign_loss_prob: true
+    high_loss_prob: 0.4
+    low_loss_prob: 0.0001
+  output_options:
+    map:
+      make_map_tree: true
+      map_type: "joint-likelihood"
+    consensus:
+      make_consensus_tree: true
+      weight_type: "joint-likelihood"
+      consensus_threshold: 0.5
+    topology_report:
+      make_topology_report: true
+      make_topology_archive: true
+      number_of_top_trees: -1

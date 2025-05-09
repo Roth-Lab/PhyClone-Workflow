@@ -1,0 +1,1 @@
+This file contains all variants that were filtered out of the provided input file.

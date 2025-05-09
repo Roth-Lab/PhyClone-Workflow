@@ -1,0 +1,54 @@
+from snakemake.io import report
+from snakemake.utils import min_version, validate
+
+min_version("9.0")
+
+validate(config, "schemas/config.schema.yaml")
+
+
+report: "report/workflow.rst"
+
+
+include: "rules/common.smk"
+
+
+config_manager = ConfigManager(config)
+pyvi_file_mgr = PyCloneFileManager(config_manager, "pyclone-vi")
+phyc_file_mgr = PhyCloneFileManager(config_manager, "phyclone")
+
+
+rule all:
+    input:
+        phyc_file_mgr.trace_file,
+        phyc_file_mgr.get_phyclone_outputs(),
+        phyc_file_mgr.version_file,
+        pyvi_file_mgr.version_file,
+
+
+rule correct_input:
+    input:
+        raw=config["input_file"],
+    output:
+        corrected=report(
+            config_manager.input_dir.joinpath("cleaned_input.tsv.gz"),
+            caption="report/cleaned_input.rst",
+            category="Input Processing",
+            labels={"Type": "Pre-processed input data"},
+        ),
+        filtered=report(
+            config_manager.input_dir.joinpath("filtered_variants.tsv.gz"),
+            caption="report/filtered_variants.rst",
+            category="Input Processing",
+            labels={"Type": "Filtered variants"},
+        ),
+    log:
+        stdout=config_manager.snakefile_logdir.joinpath("correct_input.stdout.log"),
+        stderr=config_manager.snakefile_logdir.joinpath("correct_input.stderr.log"),
+    conda:
+        "envs/python.yaml"
+    script:
+        "scripts/prep_input.py"
+
+
+include: "rules/pyclone-vi.smk"
+include: "rules/phyclone.smk"

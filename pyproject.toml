@@ -1,0 +1,6 @@
+[tool.snakefmt]
+line_length = 120
+include = '\.smk$|^Snakefile|\.py$'
+
+[tool.black]
+skip_string_normalization = true

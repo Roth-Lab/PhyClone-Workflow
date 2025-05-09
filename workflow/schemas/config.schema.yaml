@@ -1,0 +1,169 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: Snakemake configuration file for PhyClone-Workflow
+type: object
+properties:
+  input_file:
+    type: string
+    description: PyClone-VI formatted input data file
+    minLength: 1
+  experiment_name:
+    type: string
+    minLength: 1
+    description: Name for the experiment (will form the experiment root folder, e.g. results/<experiment_name>)
+  pyclone-vi:
+    type: object
+    description: PyClone-VI run parameters
+    properties:
+      num_clusters:
+        type: integer
+        default: 100
+        minimum: 5
+      density:
+        type: string
+        default: binomial
+        enum: [binomial, beta-binomial]
+      restarts:
+        type: integer
+        default: 100
+        minimum: 1
+      num_grid_points:
+        type: integer
+        default: 100
+        minimum: 10
+      num_threads:
+        type: integer
+        default: 10
+        minimum: 1
+      print_freq:
+        type: integer
+        default: 100
+        minimum: 1
+      mix_weight_prior:
+        type: number
+        minimum: 1.0
+        default: 100.0
+      seed:
+        type: [integer, 'null']
+        default: 'null'
+        minimum: 0
+      max_iters:
+        type: integer
+        default: 10000
+      precision:
+        type: number
+        default: 200.0
+  phyclone:
+    type: object
+    description: PhyClone run parameters
+    properties:
+      burnin:
+        type: integer
+        default: 100
+        minimum: 1
+      num_iters:
+        type: integer
+        default: 5000
+        minimum: 1
+      print_freq:
+        type: integer
+        default: 100
+        minimum: 1
+      density:
+        type: string
+        default: beta-binomial
+        enum: [binomial, beta-binomial]
+      proposal:
+        type: string
+        default: semi-adapted
+        enum: [semi-adapted, fully-adapted]
+      num_chains:
+        type: integer
+        default: 4
+        minimum: 1
+      num_particles:
+        type: integer
+        default: 100
+        minimum: 1
+      grid_size:
+        type: integer
+        default: 101
+        minimum: 11
+      seed:
+        type: [integer, 'null']
+        default: 'null'
+        minimum: 0
+      precision:
+        type: number
+        default: 400.0
+      concentration_value:
+        type: number
+        default: 1.0
+      enable_outlier_modelling:
+        type: boolean
+        default: true
+      outlier_modelling_options:
+        type: object
+        description: Outlier Modelling Options
+        properties:
+          outlier_prob:
+            type: number
+            default: 0.0001
+            minimum: 0.0
+          assign_loss_prob:
+            type: boolean
+            default: true
+          high_loss_prob:
+            type: number
+            default: 0.4
+            minimum: 0.0
+          low_loss_prob:
+            type: number
+            default: 0.0001
+            minimum: 0.0
+      output_options:
+        type: object
+        description: PhyClone posterior estimation options
+        properties:
+          map:
+            type: object
+            properties:
+              make_map_tree:
+                type: boolean
+                default: true
+              map_type:
+                type: string
+                default: joint-likelihood
+                enum: [joint-likelihood, frequency]
+          consensus:
+            type: object
+            properties:
+              make_consensus_tree:
+                type: boolean
+                default: true
+              weight_type:
+                type: string
+                default: joint-likelihood
+                enum: [joint-likelihood, counts]
+              consensus_threshold:
+                type: number
+                default: 0.5
+                minimum: 0.0
+          topology_report:
+            type: object
+            properties:
+              make_topology_report:
+                type: boolean
+                default: true
+              make_topology_archive:
+                type: boolean
+                default: true
+              number_of_top_trees:
+                type: integer
+                default: -1
+                minimum: -1
+
+required:
+  - input_file
+  - experiment_name
+  - pyclone-vi
+  - phyclone
